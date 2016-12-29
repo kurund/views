@@ -160,6 +160,17 @@ class views_handler_filter_date extends views_handler_filter_numeric {
   function op_between($field) {
     // Use the substitutions to ensure a consistent timestamp.
     $query_substitutions = views_views_query_substitutions($this->view);
+
+    // if time component is  missing than add it to the date field. It makes
+    // sense to always add time for between clause
+    if (strlen($this->value['min']) <= 10 ) {
+      $this->value['min'] = $this->value['min'] . ' 00:00:00';
+    }
+
+    if (strlen($this->value['max']) <= 10 ) {
+      $this->value['max'] = $this->value['max'] . ' 23:59:59';
+    }
+
     $a = intval(strtotime($this->value['min'], $query_substitutions['***CURRENT_TIME***']));
     $b = intval(strtotime($this->value['max'], $query_substitutions['***CURRENT_TIME***']));
 
